@@ -604,7 +604,7 @@ ${variant}`;
   var VERSION = "1.1.2";
   var TARGET_NAME = "My target name";
   var INITIAL_ELM_COMPILED_TIMESTAMP = Number(
-    "1683612735326"
+    "1683838515405"
   );
   var ORIGINAL_COMPILATION_MODE = "standard";
   var ORIGINAL_BROWSER_UI_POSITION = "BottomLeft";
@@ -8602,7 +8602,7 @@ var $author$project$Main$cursor = F2(
 			'\n',
 			A2($elm$core$String$left, position, model.languageModel.code));
 		var row = $elm$core$List$length(lines);
-		var y = (row - 2) * model.fontSize.height;
+		var y = ((row - 2) * model.fontSize.height) + 10;
 		var col = function () {
 			var _v0 = $elm$core$List$reverse(lines);
 			if (_v0.b) {
@@ -8612,7 +8612,7 @@ var $author$project$Main$cursor = F2(
 				return 0;
 			}
 		}();
-		var x = (col * model.fontSize.width) + 20;
+		var x = (col * model.fontSize.width) + 70;
 		return {col: col, pos: position, row: row, x: x, y: y};
 	});
 var $elm$browser$Browser$Dom$getElement = _Browser_getElement;
@@ -8723,17 +8723,30 @@ var $author$project$Main$update = F2(
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
-			default:
+			case 'AutoCompleteOff':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{autoComplete: false}),
 					$elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(
+					A2(
+						$author$project$Main$updateLangModel,
+						_Utils_update(
+							model,
+							{autoComplete: false}),
+						_Utils_update(
+							languageModel,
+							{
+								code: A2($elm$core$String$left, model.cursor.pos, languageModel.code) + ('Mjallo' + A2($elm$core$String$dropLeft, model.cursor.pos, languageModel.code))
+							})),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $author$project$Main$inlineRawCss = '\nbody {\n  margin: 0 auto 20px auto;\n  max-width: 650px;\n  line-height: 1.6;\n  font-size: 18px;\n  color: #444;\n  padding: 0 10px;\n  text-align: center;\n  background-color: #fafafa;\n}\n\nh1,\nh2,\nh3 {\n  line-height: 1.2;\n}\n\nh1 {\n  padding-bottom: 0;\n  margin-bottom: 0;\n}\n\nh1 small {\n  font-size: 1rem;\n  color: #888;\n}\n\n.subheading {\n  margin-top: 0;\n}\n\nul {\n  text-align: left;\n}\n\n.container {\n  position: relative;\n  overflow: hidden;\n  padding: 0;\n  margin: 0;\n  text-align: left;\n}\n\n.textarea,\n.view-container {\n  box-sizing: border-box;\n  font-size: 1rem;\n  line-height: 1.2;\n  width: 100%;\n  height: 100%;\n  height: 250px;\n  font-family: monospace;\n  letter-spacing: normal;\n  word-spacing: normal;\n  padding: 0;\n  margin: 0;\n  border: 0;\n  background: transparent;\n  white-space: pre;\n}\n\n#font-measure {\n  font-family: monospace;\n  visibility: hidden;\n  position: absolute;\n  white-space: pre;\n}\n\n.textarea {\n  color: rgba(0, 0, 0, 0);\n  resize: none;\n  z-index: 2;\n  position: relative;\n  padding: 10px;\n}\n\n.textarea-lc {\n  padding-left: 70px;\n}\n\n.textarea:focus {\n  outline: none;\n}\n\n.view-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 1;\n}\n\n/* Elm Syntax Highlight CSS */\npre.elmsh {\n  padding: 10px;\n  margin: 0;\n  text-align: left;\n  overflow: auto;\n}\n\ncode.elmsh {\n  padding: 0;\n}\n\n.elmsh-line:before {\n  content: attr(data-elmsh-lc);\n  display: inline-block;\n  text-align: right;\n  width: 40px;\n  padding: 0 20px 0 0;\n  opacity: 0.3;\n}\n\n/* Demo specifics */\npre.elmsh {\n  overflow: visible;\n}\n\nselect {\n    position: absolute;\n    z-index: 1000;\n    margin: 10px;\n}\n';
+var $author$project$Main$inlineRawCss = '\nbody {\n  margin: 0 auto 20px auto;\n  max-width: 650px;\n  line-height: 1.6;\n  font-size: 18px;\n  color: #444;\n  padding: 0 10px;\n  text-align: center;\n  background-color: #fafafa;\n}\n\nh1,\nh2,\nh3 {\n  line-height: 1.2;\n}\n\nh1 {\n  padding-bottom: 0;\n  margin-bottom: 0;\n}\n\nh1 small {\n  font-size: 1rem;\n  color: #888;\n}\n\n.subheading {\n  margin-top: 0;\n}\n\nul {\n  text-align: left;\n}\n\n.container {\n  position: relative;\n  overflow: hidden;\n  padding: 0;\n  margin: 0;\n  text-align: left;\n}\n\n.textarea,\n.view-container {\n  box-sizing: border-box;\n  font-size: 1rem;\n  line-height: 1.2;\n  width: 100%;\n  height: 100%;\n  height: 250px;\n  font-family: monospace;\n  letter-spacing: normal;\n  word-spacing: normal;\n  padding: 0;\n  margin: 0;\n  border: 0;\n  background: transparent;\n  white-space: pre;\n}\n\n#font-measure {\n  font-family: monospace;\n  visibility: hidden;\n  position: absolute;\n  white-space: pre;\n}\n\n.textarea {\n  color: rgba(0, 0, 0, 0);\n  resize: none;\n  z-index: 2;\n  position: relative;\n  padding: 10px;\n}\n\n.textarea-lc {\n  padding-left: 70px;\n}\n\n.textarea:focus {\n  outline: none;\n}\n\n.view-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 1;\n}\n\n/* Elm Syntax Highlight CSS */\npre.elmsh {\n  padding: 10px;\n  margin: 0;\n  text-align: left;\n  overflow: auto;\n}\n\ncode.elmsh {\n  padding: 0;\n}\n\n.elmsh-line:before {\n  content: attr(data-elmsh-lc);\n  display: inline-block;\n  text-align: right;\n  width: 40px;\n  padding: 0 20px 0 0;\n  opacity: 0.3;\n}\n\n/* Demo specifics */\npre.elmsh {\n  overflow: visible;\n}\n\nnav {\n    position: absolute;\n    z-index: 10;\n    padding: 8px;\n    border: 1.5px solid #445577;\n    border-radius: 4px;\n    line-height: 1.2em;\n    background-color: #333;\n    color: #fff;\n}\n\nnav > p {\n    margin: 2px;\n    font-family: monospace;\n    font-size: 1rem;\n}\n\nnav > p.selected {\n    background-color: #445577;\n}\n';
 var $elm$virtual_dom$VirtualDom$node = function (tag) {
 	return _VirtualDom_node(
 		_VirtualDom_noScript(tag));
@@ -10934,55 +10947,51 @@ var $elm$virtual_dom$VirtualDom$lazy3 = _VirtualDom_lazy3;
 var $elm$html$Html$Lazy$lazy3 = $elm$virtual_dom$VirtualDom$lazy3;
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$core$Debug$log = _Debug_log;
-var $elm$html$Html$option = _VirtualDom_node('option');
+var $elm$html$Html$nav = _VirtualDom_node('nav');
+var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$core$Basics$round = _Basics_round;
-var $elm$html$Html$select = _VirtualDom_node('select');
 var $author$project$Main$viewAutoComplete = F2(
 	function (cursor_, visible) {
 		return visible ? A2(
-			$elm$html$Html$select,
+			$elm$html$Html$nav,
 			_List_fromArray(
 				[
 					A2(
 					$elm$html$Html$Attributes$style,
 					'left',
-					A2(
-						$elm$core$Debug$log,
-						'x',
-						$elm$core$String$fromInt(
-							$elm$core$Basics$round(cursor_.x)) + 'px')),
+					$elm$core$String$fromInt(
+						$elm$core$Basics$round(cursor_.x)) + 'px'),
 					A2(
 					$elm$html$Html$Attributes$style,
 					'top',
-					A2(
-						$elm$core$Debug$log,
-						'y',
-						$elm$core$String$fromInt(
-							$elm$core$Basics$round(cursor_.y)) + 'px'))
+					$elm$core$String$fromInt(
+						$elm$core$Basics$round(cursor_.y)) + 'px')
 				]),
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$option,
-					_List_Nil,
+					$elm$html$Html$p,
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Mjallo')
+							$elm$html$Html$Attributes$class('selected')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('\uD83D\uDEDF Mjallo')
 						])),
 					A2(
-					$elm$html$Html$option,
+					$elm$html$Html$p,
 					_List_Nil,
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Dallo')
+							$elm$html$Html$text('⚡️ Dallo')
 						])),
 					A2(
-					$elm$html$Html$option,
+					$elm$html$Html$p,
 					_List_Nil,
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Ballo')
+							$elm$html$Html$text('👁️ Ballo')
 						]))
 				])) : A2($elm$html$Html$span, _List_Nil, _List_Nil);
 	});
@@ -11011,33 +11020,54 @@ var $elm$json$Json$Decode$at = F2(
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $author$project$Main$AutoCompleteOff = {$: 'AutoCompleteOff'};
 var $author$project$Main$AutoCompleteToggled = {$: 'AutoCompleteToggled'};
-var $author$project$Main$NoOp = {$: 'NoOp'};
+var $author$project$Main$Complete = {$: 'Complete'};
+var $author$project$Main$Move = F2(
+	function (a, b) {
+		return {$: 'Move', a: a, b: b};
+	});
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
+var $elm$json$Json$Decode$map4 = _Json_map4;
 var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$Main$keyDecoder = A3(
-	$elm$json$Json$Decode$map2,
-	F2(
-		function (k, c) {
-			var _v0 = _Utils_Tuple2(k, c);
-			_v0$2:
-			while (true) {
-				switch (_v0.a) {
-					case ' ':
-						if (_v0.b) {
-							return $author$project$Main$AutoCompleteToggled;
-						} else {
+var $author$project$Main$keyDecoder = function (model) {
+	return A5(
+		$elm$json$Json$Decode$map4,
+		F4(
+			function (k, c, start, end) {
+				var _v0 = _Utils_Tuple2(k, c);
+				_v0$2:
+				while (true) {
+					switch (_v0.a) {
+						case ' ':
+							if (_v0.b) {
+								return _Utils_Tuple2($author$project$Main$AutoCompleteToggled, false);
+							} else {
+								break _v0$2;
+							}
+						case 'Escape':
+							return _Utils_Tuple2($author$project$Main$AutoCompleteOff, false);
+						default:
 							break _v0$2;
-						}
-					case 'Escape':
-						return $author$project$Main$AutoCompleteOff;
-					default:
-						break _v0$2;
+					}
 				}
-			}
-			return $author$project$Main$NoOp;
-		}),
-	A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'ctrlKey', $elm$json$Json$Decode$bool));
+				var key = _v0.a;
+				var control = _v0.b;
+				return (model.autoComplete && (key === 'Enter')) ? _Utils_Tuple2($author$project$Main$Complete, true) : _Utils_Tuple2(
+					A2($author$project$Main$Move, start, end),
+					false);
+			}),
+		A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string),
+		A2($elm$json$Json$Decode$field, 'ctrlKey', $elm$json$Json$Decode$bool),
+		A2(
+			$elm$json$Json$Decode$at,
+			_List_fromArray(
+				['target', 'selectionStart']),
+			$elm$json$Json$Decode$int),
+		A2(
+			$elm$json$Json$Decode$at,
+			_List_fromArray(
+				['target', 'selectionEnd']),
+			$elm$json$Json$Decode$int));
+};
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -11076,6 +11106,16 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
+var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
+	return {$: 'MayPreventDefault', a: a};
+};
+var $elm$html$Html$Events$preventDefaultOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
+	});
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -11086,10 +11126,6 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 	});
 var $elm$html$Html$Attributes$spellcheck = $elm$html$Html$Attributes$boolProperty('spellcheck');
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
-var $author$project$Main$Move = F2(
-	function (a, b) {
-		return {$: 'Move', a: a, b: b};
-	});
 var $author$project$Main$updateSelection = A3(
 	$elm$json$Json$Decode$map2,
 	$author$project$Main$Move,
@@ -11104,23 +11140,27 @@ var $author$project$Main$updateSelection = A3(
 			['target', 'selectionEnd']),
 		$elm$json$Json$Decode$int));
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Main$viewTextarea = function (codeStr) {
+var $author$project$Main$viewTextarea = function (model) {
+	var languageModel = model.languageModel;
 	return A2(
 		$elm$html$Html$textarea,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$value(codeStr),
+				$elm$html$Html$Attributes$value(languageModel.code),
 				$elm$html$Html$Attributes$classList(
 				_List_fromArray(
 					[
 						_Utils_Tuple2('textarea', true),
 						_Utils_Tuple2('textarea-lc', true)
 					])),
-				$elm$html$Html$Events$onInput($author$project$Main$SetText),
-				A2($elm$html$Html$Events$on, 'keydown', $author$project$Main$keyDecoder),
 				$elm$html$Html$Attributes$spellcheck(false),
-				A2($elm$html$Html$Events$on, 'click', $author$project$Main$updateSelection),
+				$elm$html$Html$Events$onInput($author$project$Main$SetText),
+				A2(
+				$elm$html$Html$Events$preventDefaultOn,
+				'keydown',
+				$author$project$Main$keyDecoder(model)),
 				A2($elm$html$Html$Events$on, 'keyup', $author$project$Main$updateSelection),
+				A2($elm$html$Html$Events$on, 'click', $author$project$Main$updateSelection),
 				A2(
 				$elm$html$Html$Events$on,
 				'scroll',
@@ -11174,7 +11214,7 @@ var $author$project$Main$viewLanguage = F2(
 						[
 							A4($elm$html$Html$Lazy$lazy3, parser, lineCount, model.languageModel.code, model.languageModel.highlight)
 						])),
-					$author$project$Main$viewTextarea(model.languageModel.code),
+					$author$project$Main$viewTextarea(model),
 					$author$project$Main$viewFontMeasure,
 					A2($author$project$Main$viewAutoComplete, model.cursor, model.autoComplete)
 				]));

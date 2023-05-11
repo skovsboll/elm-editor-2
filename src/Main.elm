@@ -2,10 +2,10 @@ module Main exposing (main)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Browser.Events exposing (onAnimationFrame)
+import Browser.Events exposing (onAnimationFrame, onKeyPress)
 import Html exposing (Html, a, div, h1, li, nav, node, option, select, text, textarea, ul)
-import Html.Attributes exposing (class, classList, id, spellcheck, style, value)
-import Html.Events exposing (on, onInput)
+import Html.Attributes exposing (autofocus, class, classList, id, selected, size, spellcheck, style, tabindex, value)
+import Html.Events exposing (on, onInput, preventDefaultOn)
 import Html.Lazy
 import Json.Decode as Json
 import Parser
@@ -125,24 +125,7 @@ type Msg
     | AutoCompleteToggled
     | AutoCompleteOff
     | Move Int Int
-
-
-keyDecoder : Json.Decoder Msg
-keyDecoder =
-    Json.map2
-        (\k c ->
-            case ( k, c ) of
-                ( " ", True ) ->
-                    AutoCompleteToggled
-
-                ( "Escape", _ ) ->
-                    AutoCompleteOff
-
-                _ ->
-                    NoOp
-        )
-        (Json.field "key" Json.string)
-        (Json.field "ctrlKey" Json.bool)
+    | Complete
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -223,6 +206,14 @@ update msg ({ languageModel } as model) =
             , Cmd.none
             )
 
+        Complete ->
+            ( updateLangModel { model | autoComplete = False }
+                { languageModel
+                    | code = String.left model.cursor.pos languageModel.code ++ "Mjallo" ++ String.dropLeft model.cursor.pos languageModel.code
+                }
+            , Cmd.none
+            )
+
 
 updateLangModel : Model -> LanguageModel -> Model
 updateLangModel model langModel =
@@ -241,7 +232,7 @@ cursor model position =
             lines |> List.length
 
         y =
-            toFloat (row - 2) * model.fontSize.height
+            toFloat (row - 2) * model.fontSize.height + 10
 
         col =
             case List.reverse lines of
@@ -252,7 +243,7 @@ cursor model position =
                     0
 
         x =
-            toFloat col * model.fontSize.width + 20
+            toFloat col * model.fontSize.width + 70
     in
     { x = x, y = y, row = row, col = col, pos = position }
 
@@ -281,29 +272,17 @@ view model =
     }
 
 
-viewAutoComplete : Cursor -> Bool -> Html msg
+viewAutoComplete : Cursor -> Bool -> Html Msg
 viewAutoComplete cursor_ visible =
     if visible then
-        select
-            [ style "left" (String.fromInt (round cursor_.x) ++ "px" |> Debug.log "x")
-            , style "top" (String.fromInt (round cursor_.y) ++ "px" |> Debug.log "y")
+        nav
+            [ style "left" (String.fromInt (round cursor_.x) ++ "px")
+            , style "top" (String.fromInt (round cursor_.y) ++ "px")
             ]
-            [ option [] [ text "Mjallo" ]
-            , option [] [ text "Dallo" ]
-            , option [] [ text "Ballo" ]
+            [ Html.p [ class "selected" ] [ text "\u{1F6DF} Mjallo" ]
+            , Html.p [] [ text "⚡️ Dallo" ]
+            , Html.p [] [ text "👁️ Ballo" ]
             ]
-        --nav
-        --    [ style "position" "absolute"
-        --    , style "z-index" "1000"
-        --    , style "left" (String.fromInt (round cursor_.x) ++ "px" |> Debug.log "x")
-        --    , style "top" (String.fromInt (round cursor_.y) ++ "px" |> Debug.log "y")
-        --    ]
-        --    [ ul []
-        --        [ li [] [ text "Mjallo" ]
-        --        , li [] [ text "Dallo" ]
-        --        , li [] [ text "Ballo" ]
-        --        ]
-        --    ]
 
     else
         Html.span [] []
@@ -350,7 +329,7 @@ viewLanguage parser ({ lineCount } as model) =
                 model.languageModel.code
                 model.languageModel.highlight
             ]
-        , viewTextarea model.languageModel.code
+        , viewTextarea model
         , viewFontMeasure
         , viewAutoComplete model.cursor model.autoComplete
         ]
@@ -361,21 +340,19 @@ viewFontMeasure =
     div [ id "font-measure" ] [ text "A" ]
 
 
-viewTextarea : String -> Html Msg
-viewTextarea codeStr =
+viewTextarea : Model -> Html Msg
+viewTextarea ({ languageModel } as model) =
     textarea
-        [ value codeStr
+        [ value languageModel.code
         , classList
             [ ( "textarea", True )
             , ( "textarea-lc", True )
             ]
-        , onInput SetText
-        , on "keydown" keyDecoder
         , spellcheck False
-        , Html.Events.on "click" updateSelection
-        , Html.Events.on "keyup" updateSelection
-
-        --, Html.Events.on "select" updateSelection
+        , onInput SetText
+        , preventDefaultOn "keydown" (keyDecoder model)
+        , on "keyup" updateSelection
+        , on "click" updateSelection
         , Html.Events.on "scroll"
             (Json.map2 Scroll
                 (Json.at [ "target", "scrollTop" ] Json.int)
@@ -384,6 +361,30 @@ viewTextarea codeStr =
             )
         ]
         []
+
+
+keyDecoder : Model -> Json.Decoder ( Msg, Bool )
+keyDecoder model =
+    Json.map4
+        (\k c start end ->
+            case ( k, c ) of
+                ( " ", True ) ->
+                    ( AutoCompleteToggled, False )
+
+                ( "Escape", _ ) ->
+                    ( AutoCompleteOff, False )
+
+                ( key, control ) ->
+                    if model.autoComplete && key == "Enter" then
+                        ( Complete, True )
+
+                    else
+                        ( Move start end, False )
+        )
+        (Json.field "key" Json.string)
+        (Json.field "ctrlKey" Json.bool)
+        (Json.at [ "target", "selectionStart" ] Json.int)
+        (Json.at [ "target", "selectionEnd" ] Json.int)
 
 
 updateSelection : Json.Decoder Msg
@@ -543,9 +544,24 @@ pre.elmsh {
   overflow: visible;
 }
 
-select {
+nav {
     position: absolute;
-    z-index: 1000;
-    margin: 10px;
+    z-index: 10;
+    padding: 8px;
+    border: 1.5px solid #445577;
+    border-radius: 4px;
+    line-height: 1.2em;
+    background-color: #333;
+    color: #fff;
+}
+
+nav > p {
+    margin: 2px;
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+nav > p.selected {
+    background-color: #445577;
 }
 """
